@@ -1,5 +1,5 @@
 {
-  "name": "oso-cloud-policy-generator",
+  "name": "oso-cloud-policy-builder",
   "version": "0.0.0-development",
   "description": "A utility for generating, validating, and deploying an Oso Cloud policy",
   "main": "./lib/index.js",
@@ -32,9 +32,9 @@
   },
   "keywords": [],
   "bugs": {
-    "url": "https://github.com/pat-eason/oso-cloud-policy-generator/issues"
+    "url": "https://github.com/pat-eason/oso-cloud-policy-builder/issues"
   },
-  "homepage": "https://github.com/pat-eason/oso-cloud-policy-generator/issues#readme",
+  "homepage": "https://github.com/pat-eason/oso-cloud-policy-builder/issues#readme",
   "devDependencies": {
     "@ryansonshine/commitizen": "^4.2.8",
     "@ryansonshine/cz-conventional-changelog": "^3.3.4",
