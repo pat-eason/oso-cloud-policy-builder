@@ -1,24 +1,7 @@
-import type {
-  AuthorizationRelation,
-  AuthorizationResource,
-  AuthorizationRule,
-} from './types';
+import { AuthorizationResourceBase } from './AuthorizationResourceBase';
+import type { AuthorizationResource } from './types';
 
-export class OsoResource implements AuthorizationResource {
-  private _name: string;
-  private _permissions: string[];
-  private _relations: AuthorizationRelation[];
-  private _roles: string[];
-  private _rules: AuthorizationRule[];
-
-  constructor(name: string) {
-    this._name = name;
-    this._permissions = [];
-    this._relations = [];
-    this._roles = [];
-    this._rules = [];
-  }
-
+export class OsoResource extends AuthorizationResourceBase {
   public addPermission(permission: string): void {
     if (this._permissions.find(x => x === permission)) {
       return;
@@ -36,7 +19,20 @@ export class OsoResource implements AuthorizationResource {
     this._permissions.splice(foundPermissionIndex, 1);
   }
 
-  /** @TODO relation management */
+  public addRelation(name: string, resource: AuthorizationResource): void {
+    if (this._relations.find(x => x.key === name)) {
+      return;
+    }
+    this._relations.push({ key: name, resource });
+  }
+
+  public removeRelation(name: string): void {
+    const foundRelationIndex = this._relations.findIndex(x => x.key === name);
+    if (foundRelationIndex === -1) {
+      return;
+    }
+    this._relations.splice(foundRelationIndex, 1);
+  }
 
   public addRole(role: string): void {
     if (this._roles.find(x => x === role)) {
@@ -53,25 +49,38 @@ export class OsoResource implements AuthorizationResource {
     this._roles.splice(foundRoleIndex, 1);
   }
 
-  /** @TODO rule management */
-
-  public get name(): string {
-    return this._name;
+  public addRule(permission: string, target: string, relation?: string): void {
+    if (
+      this._rules.find(
+        x =>
+          x.permission === permission &&
+          x.target === target &&
+          x.relation === relation
+      )
+    ) {
+      return;
+    }
+    this._rules.push({
+      permission,
+      target,
+      relation,
+    });
   }
 
-  public get permissions(): string[] {
-    return this._permissions;
-  }
-
-  public get relations(): AuthorizationRelation[] {
-    return this._relations;
-  }
-
-  public get roles(): string[] {
-    return this._roles;
-  }
-
-  public get rules(): AuthorizationRule[] {
-    return this._rules;
+  public removeRule(
+    permission: string,
+    target: string,
+    relation?: string
+  ): void {
+    const foundRuleIndex = this._rules.findIndex(
+      x =>
+        x.permission === permission &&
+        x.target === target &&
+        x.relation === relation
+    );
+    if (foundRuleIndex === -1) {
+      return;
+    }
+    this._rules.splice(foundRuleIndex, 1);
   }
 }

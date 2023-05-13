@@ -1,5 +1,5 @@
 export interface AuthorizationRule {
+  permission: string;
   relation?: string;
-  source: string;
   target: string;
 }
