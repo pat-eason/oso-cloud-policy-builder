@@ -343,4 +343,71 @@ describe('OsoResource', () => {
       expect(osoResource.rules).toEqual([addRuleTest]);
     });
   });
+
+  describe('Sandbox demo example', () => {
+    it('Generates an Organization resource', () => {
+      const organizationResource = new OsoResource('Organization');
+      organizationResource
+        .addRole('viewer')
+        .addRole('owner')
+        .addPermission('view')
+        .addPermission('edit')
+        .addRule('view', 'viewer')
+        .addRule('edit', 'owner')
+        .addRule('viewer', 'owner');
+
+      expect(organizationResource.name).toEqual('Organization');
+      expect(organizationResource.permissions).toEqual(['view', 'edit']);
+      expect(organizationResource.roles).toEqual(['viewer', 'owner']);
+      expect(organizationResource.rules).toEqual([
+        { permission: 'view', target: 'viewer' },
+        { permission: 'edit', target: 'owner' },
+        { permission: 'viewer', target: 'owner' },
+      ]);
+    });
+
+    it('Generates a Repository resource', () => {
+      const organizationResource = new OsoResource('Organization');
+      const repositoryResource = new OsoResource('Repository');
+      repositoryResource
+        .addRole('viewer')
+        .addRole('owner')
+        .addRole('contributor')
+        .addPermission('view')
+        .addPermission('edit')
+        .addPermission('create')
+        .addRelation('parent', organizationResource)
+        .addRule('view', 'viewer')
+        .addRule('edit', 'contributor')
+        .addRule('create', 'owner')
+        .addRule('viewer', 'contributor')
+        .addRule('contributor', 'owner')
+        .addRule('viewer', 'viewer', 'parent')
+        .addRule('owner', 'owner', 'parent');
+
+      expect(repositoryResource.name).toEqual('Repository');
+      expect(repositoryResource.permissions).toEqual([
+        'view',
+        'edit',
+        'create',
+      ]);
+      expect(repositoryResource.roles).toEqual([
+        'viewer',
+        'owner',
+        'contributor',
+      ]);
+      expect(repositoryResource.relations).toEqual([
+        { key: 'parent', resource: organizationResource },
+      ]);
+      expect(repositoryResource.rules).toEqual([
+        { permission: 'view', target: 'viewer' },
+        { permission: 'edit', target: 'contributor' },
+        { permission: 'create', target: 'owner' },
+        { permission: 'viewer', target: 'contributor' },
+        { permission: 'contributor', target: 'owner' },
+        { permission: 'viewer', target: 'viewer', relation: 'parent' },
+        { permission: 'owner', target: 'owner', relation: 'parent' },
+      ]);
+    });
+  });
 });
