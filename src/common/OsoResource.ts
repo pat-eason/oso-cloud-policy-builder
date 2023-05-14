@@ -1,5 +1,5 @@
 import { AuthorizationResourceBase } from './AuthorizationResourceBase';
-import type { AuthorizationResource, AuthorizationRule } from './types';
+import type { AuthorizationResource, AuthorizationResourceRule } from './types';
 
 export class OsoResource extends AuthorizationResourceBase {
   public addPermission(permission: string): this {
@@ -66,7 +66,7 @@ export class OsoResource extends AuthorizationResourceBase {
     ) {
       return this;
     }
-    const pushRule: AuthorizationRule = { permission, target };
+    const pushRule: AuthorizationResourceRule = { permission, target };
     if (relation) {
       pushRule.relation = relation;
     }

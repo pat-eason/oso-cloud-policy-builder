@@ -3,7 +3,7 @@ import { faker } from '@faker-js/faker';
 import { OsoResource } from '../../src/common/OsoResource';
 import {
   AuthorizationRelation,
-  AuthorizationRule,
+  AuthorizationResourceRule,
 } from '../../src/common/types';
 import { ResourceNameRequiredError } from '../../src/exceptions/ResourceNameRequiredError';
 
@@ -244,7 +244,7 @@ describe('OsoResource', () => {
   });
 
   describe('rule management', () => {
-    const rulesTest: AuthorizationRule[] = [
+    const rulesTest: AuthorizationResourceRule[] = [
       { permission: faker.random.word(), target: faker.random.word() },
       {
         permission: faker.random.word(),
