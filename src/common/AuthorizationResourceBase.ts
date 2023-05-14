@@ -61,7 +61,6 @@ export abstract class AuthorizationResourceBase
   }
 
   private validatePermissions(): Error[] {
-    console.log('validatePermissions', this._permissions);
     const errors: Error[] = [];
 
     this._permissions.forEach(x => {
@@ -82,8 +81,6 @@ export abstract class AuthorizationResourceBase
       }
     });
 
-    console.log('errors', errors);
-
     return errors;
   }
 
@@ -103,7 +100,6 @@ export abstract class AuthorizationResourceBase
     const errors: Error[] = [];
 
     this._rules.forEach(x => {
-      console.log('x', x);
       if (!x.permission) {
         errors.push(
           new ResourceValueInvalidError('rule.permission', x.permission)

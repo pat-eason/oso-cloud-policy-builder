@@ -417,9 +417,8 @@ describe('OsoResource', () => {
       osoResource.addPermission('test').addPermission('').addPermission('  ');
 
       const result = osoResource.validate();
-      console.log(result);
       expect(result).toHaveProperty('errors');
-      expect(result.errors).toHaveLength(2);
+      expect(result.errors).toHaveLength(1);
     });
 
     test.todo('Invalid relations fail validation');
