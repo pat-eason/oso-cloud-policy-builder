@@ -410,4 +410,20 @@ describe('OsoResource', () => {
       ]);
     });
   });
+
+  describe('vaidation', () => {
+    it('Invalid permissions fail validation', () => {
+      const osoResource = new OsoResource(resourceNameTest);
+      osoResource.addPermission('test').addPermission('').addPermission('  ');
+
+      const result = osoResource.validate();
+      console.log(result);
+      expect(result).toHaveProperty('errors');
+      expect(result.errors).toHaveLength(2);
+    });
+
+    test.todo('Invalid relations fail validation');
+    test.todo('Invalid roles fail validation');
+    test.todo('Invalid rules fail validation');
+  });
 });

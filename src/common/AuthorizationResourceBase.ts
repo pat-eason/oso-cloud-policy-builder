@@ -1,9 +1,13 @@
+import { PermissionMissingForRuleError } from '../exceptions/PermissionMissingForRuleError';
 import { ResourceNameRequiredError } from '../exceptions/ResourceNameRequiredError';
+import { ResourceValidationError } from '../exceptions/ResourceValidationError';
+import { ResourceValueInvalidError } from '../exceptions/ResourceValueInvalidError';
 import {
   AuthorizationRelation,
   AuthorizationResource,
   AuthorizationRule,
 } from './types';
+import { ResourceValidationResult } from './types/ResourceValidationResult';
 
 export abstract class AuthorizationResourceBase
   implements AuthorizationResource
@@ -43,6 +47,94 @@ export abstract class AuthorizationResourceBase
 
   public get rules(): AuthorizationRule[] {
     return this._rules;
+  }
+
+  public validate(): ResourceValidationResult {
+    return {
+      errors: [
+        ...this.validatePermissions(),
+        ...this.validateRelations(),
+        ...this.validateRoles(),
+        ...this.validateRules(),
+      ],
+    };
+  }
+
+  private validatePermissions(): Error[] {
+    console.log('validatePermissions', this._permissions);
+    const errors: Error[] = [];
+
+    this._permissions.forEach(x => {
+      if (!x) {
+        errors.push(new ResourceValueInvalidError('permission', x));
+      }
+    });
+
+    return errors;
+  }
+
+  private validateRelations(): Error[] {
+    const errors: Error[] = [];
+
+    this._relations.forEach(x => {
+      if (!x.key) {
+        errors.push(new ResourceValueInvalidError('relation.key', x.key));
+      }
+    });
+
+    console.log('errors', errors);
+
+    return errors;
+  }
+
+  private validateRoles(): Error[] {
+    const errors: Error[] = [];
+
+    this._roles.forEach(x => {
+      if (!x) {
+        errors.push(new ResourceValueInvalidError('role', x));
+      }
+    });
+
+    return errors;
+  }
+
+  private validateRules(): Error[] {
+    const errors: Error[] = [];
+
+    this._rules.forEach(x => {
+      console.log('x', x);
+      if (!x.permission) {
+        errors.push(
+          new ResourceValueInvalidError('rule.permission', x.permission)
+        );
+      }
+
+      if (!x.target) {
+        errors.push(new ResourceValueInvalidError('rule.target', x.permission));
+      }
+
+      if (
+        x.permission &&
+        !(
+          this._permissions.includes(x.permission) ||
+          this._roles.includes(x.permission)
+        )
+      ) {
+        errors.push(new PermissionMissingForRuleError(x.permission));
+      }
+
+      if (
+        x.target &&
+        !(
+          this._permissions.includes(x.target) || this._roles.includes(x.target)
+        )
+      ) {
+        errors.push(new PermissionMissingForRuleError(x.target));
+      }
+    });
+
+    return errors;
   }
 
   private normalizeResourceName(name: string): string {
