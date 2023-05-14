@@ -1,11 +1,10 @@
 import { PermissionMissingForRuleError } from '../exceptions/PermissionMissingForRuleError';
 import { ResourceNameRequiredError } from '../exceptions/ResourceNameRequiredError';
-import { ResourceValidationError } from '../exceptions/ResourceValidationError';
 import { ResourceValueInvalidError } from '../exceptions/ResourceValueInvalidError';
 import {
   AuthorizationRelation,
   AuthorizationResource,
-  AuthorizationRule,
+  AuthorizationResourceRule,
 } from './types';
 import { ResourceValidationResult } from './types/ResourceValidationResult';
 
@@ -16,7 +15,7 @@ export abstract class AuthorizationResourceBase
   protected _permissions: string[];
   protected _relations: AuthorizationRelation[];
   protected _roles: string[];
-  protected _rules: AuthorizationRule[];
+  protected _rules: AuthorizationResourceRule[];
 
   constructor(name: string) {
     if (!name?.trim()) {
@@ -45,7 +44,7 @@ export abstract class AuthorizationResourceBase
     return this._roles;
   }
 
-  public get rules(): AuthorizationRule[] {
+  public get rules(): AuthorizationResourceRule[] {
     return this._rules;
   }
 
